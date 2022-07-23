@@ -1,12 +1,15 @@
 package org.example;
 
+/**
+ * Класс растений
+ */
 public class Plant {
-    private String common;
-    private String botanical;
-    private int zone;
-    private String light;
-    private int price;
-    private int availability;
+    private String common; //Общее название
+    private String botanical; //Ботаническое название
+    private int zone; //Зона
+    private String light; //Обитание в свете
+    private int price; //Цена
+    private int availability; //Доступность
 
     public Plant(String common, String botanical, int zone,
                  String light, int price, int availability){
