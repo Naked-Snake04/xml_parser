@@ -11,6 +11,9 @@ public class Plant {
     private double price; //Цена
     private int availability; //Доступность
 
+    public Plant(){
+
+    }
     public Plant(String common, String botanical, int zone,
                  String light, double price, int availability){
         this.common = common;
@@ -61,7 +64,7 @@ public class Plant {
         this.light = light;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
