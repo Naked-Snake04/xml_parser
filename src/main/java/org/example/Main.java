@@ -11,21 +11,26 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Main {
     final static private String file = "data/plants__000.xml";
 
-
     private static final ArrayList<Plant> plants = new ArrayList<>();
+    private static final ArrayList<Catalog> catalogs = new ArrayList<>();
     public static void main(String[] args) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy", Locale.UK);
         try {
             Plant plant = null;
+            Catalog catalog = null;
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new File(file));
             NodeList nodeList = document.getElementsByTagName("PLANT");
-
+            NodeList nodeList1 = document.getElementsByTagName("CATALOG");
             for (int i = 0; i < nodeList.getLength(); i++){
                 Node node = nodeList.item(i);
 
@@ -43,12 +48,31 @@ public class Main {
                 plants.add(plant);
                 }
             }
-            for (Plant value : plants) {
-                System.out.println(value.getCommon() + " " + value.getBotanical() + " "
-                + value.getPrice());
+
+            for (int i = 0; i< nodeList1.getLength(); i++){
+                Node node = nodeList1.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+
+                    catalog = new Catalog();
+                    catalog.setUuid(eElement.getAttribute("uuid"));
+                    catalog.setDate(formatter.parse(eElement.getAttribute("date")));
+                    catalog.setCompany(eElement.getAttribute("company"));
+
+                    catalogs.add(catalog);
+                }
+                }
+            for (Catalog catalog1 : catalogs) {
+                System.out.println(catalog1.getUuid() + " " + catalog1.getDate() + " "
+                + catalog1.getCompany());
+                for (Plant value : plants) {
+                    System.out.println(value.getCommon() + " " + value.getBotanical() + " "
+                            + value.getPrice());
+                }
             }
 
-        } catch (ParserConfigurationException | IOException | SAXException e) {
+        } catch (ParserConfigurationException | IOException | SAXException | ParseException e) {
             throw new RuntimeException(e);
         }
     }
