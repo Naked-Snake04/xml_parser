@@ -10,6 +10,10 @@ public class Catalog {
     private Date date; //Дата
     private String company; //Компания
 
+    public Catalog(){
+
+    }
+
     public Catalog(String uuid, Date date, String company){
         this.uuid = uuid;
         this.date = date;
