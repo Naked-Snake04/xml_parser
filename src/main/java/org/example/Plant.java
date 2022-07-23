@@ -8,11 +8,11 @@ public class Plant {
     private String botanical; //Ботаническое название
     private int zone; //Зона
     private String light; //Обитание в свете
-    private int price; //Цена
+    private double price; //Цена
     private int availability; //Доступность
 
     public Plant(String common, String botanical, int zone,
-                 String light, int price, int availability){
+                 String light, double price, int availability){
         this.common = common;
         this.botanical = botanical;
         this.zone = zone;
@@ -37,7 +37,7 @@ public class Plant {
         return zone;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 

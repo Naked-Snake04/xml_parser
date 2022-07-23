@@ -2,10 +2,13 @@ package org.example;
 
 import java.util.Date;
 
+/**
+ * Класс каталог
+ */
 public class Catalog {
-    private String uuid;
-    private Date date;
-    private String company;
+    private String uuid; //id каталога
+    private Date date; //Дата
+    private String company; //Компания
 
     public Catalog(String uuid, Date date, String company){
         this.uuid = uuid;
