@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
     //TODO: Сделать считывание не одного, а нескольких файлов (узнать про маски)
-    final static private String file = "data/plants__000.xml";
-    //TODO: Узнать как сохранять в базы данных postgresql
+    final static private String file = "data/plants__001.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
     private static final ArrayList<Catalog> catalogs = new ArrayList<>();
 
@@ -28,6 +28,7 @@ public class Main {
     private final static String password = "Naked_Snake04";
 
     public static void main(String[] args) {
+        Main main = new Main();
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         try {
             Plant plant = null;
@@ -62,7 +63,6 @@ public class Main {
                     Element eElement = (Element) node;
 
                     catalog = new Catalog();
-                    catalog.setId((int) (Math.random() * 10));
                     catalog.setUuid(eElement.getAttribute("uuid"));
                     catalog.setDate(formatter.parse(eElement.getAttribute("date")));
                     catalog.setCompany(eElement.getAttribute("company"));
@@ -82,17 +82,29 @@ public class Main {
         } catch (ParserConfigurationException | IOException | SAXException | ParseException e) {
             throw new RuntimeException(e);
         }
-//        try (Connection connection = DriverManager.getConnection(url, user, password)){
-//            System.out.println("Database connected!");
-//
-//            Statement statement = connection.createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT * from d_cat_catalog");
-//
-//            while (resultSet.next()){
-//                System.out.println(resultSet.getDate(1));
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        main.insertCatalogs(catalogs);
+    }
+
+    public void insertCatalogs(ArrayList<Catalog> catalogs){
+        String SQL = "INSERT INTO d_cat_catalog(uuid,delivery_date,company) VALUES(?,?,?)";
+
+        try(
+                Connection connection = connect();
+                PreparedStatement statement = connection.prepareStatement(SQL)) {
+
+            for (Catalog catalog: catalogs){
+                statement.setString(1, catalog.getUuid());
+                statement.setTimestamp(2, new Timestamp(catalog.getDate().getTime()));
+                statement.setString(3, catalog.getCompany());
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Connection connect() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 }
