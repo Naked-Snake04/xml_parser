@@ -14,15 +14,17 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Main {
+    //TODO: Сделать считывание не одного, а нескольких файлов (узнать про маски)
     final static private String file = "data/plants__000.xml";
-
+    //TODO: Узнать как сохранять в базы данных postgresql
     private static final ArrayList<Plant> plants = new ArrayList<>();
     private static final ArrayList<Catalog> catalogs = new ArrayList<>();
     public static void main(String[] args) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy", Locale.UK);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         try {
             Plant plant = null;
             Catalog catalog = null;
@@ -43,7 +45,7 @@ public class Main {
                     plant.setZone(Integer.parseInt(eElement.getElementsByTagName("ZONE").item(0).getTextContent()));
                     plant.setLight(eElement.getElementsByTagName("LIGHT").item(0).getTextContent());
                     plant.setPrice(Double.parseDouble(eElement.getElementsByTagName("PRICE")
-                            .item(0).getTextContent().replaceAll("[$]*", "")));
+                            .item(0).getTextContent().replaceAll("[$]", "")));
                     plant.setAvailability(Integer.parseInt(eElement.getElementsByTagName("AVAILABILITY").item(0).getTextContent()));
                 plants.add(plant);
                 }
@@ -56,6 +58,7 @@ public class Main {
                     Element eElement = (Element) node;
 
                     catalog = new Catalog();
+                    catalog.setId((int) (Math.random() * 10));
                     catalog.setUuid(eElement.getAttribute("uuid"));
                     catalog.setDate(formatter.parse(eElement.getAttribute("date")));
                     catalog.setCompany(eElement.getAttribute("company"));

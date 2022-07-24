@@ -10,6 +10,7 @@ public class Catalog {
     private Date date; //Дата
     private String company; //Компания
 
+    private int id;
     public Catalog(){
 
     }
@@ -18,6 +19,10 @@ public class Catalog {
         this.uuid = uuid;
         this.date = date;
         this.company = company;
+    }
+
+    public Catalog(int id){
+        this.id = id;
     }
 
     public String getUuid() {
@@ -32,6 +37,10 @@ public class Catalog {
         return company;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -42,5 +51,9 @@ public class Catalog {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
