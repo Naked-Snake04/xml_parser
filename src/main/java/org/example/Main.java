@@ -11,11 +11,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class Main {
     //TODO: Сделать считывание не одного, а нескольких файлов (узнать про маски)
@@ -23,6 +22,11 @@ public class Main {
     //TODO: Узнать как сохранять в базы данных postgresql
     private static final ArrayList<Plant> plants = new ArrayList<>();
     private static final ArrayList<Catalog> catalogs = new ArrayList<>();
+
+    private static final String url = "jdbc:postgresql://localhost/plant";
+    private final static String user = "postgres";
+    private final static String password = "Naked_Snake04";
+
     public static void main(String[] args) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         try {
@@ -78,5 +82,17 @@ public class Main {
         } catch (ParserConfigurationException | IOException | SAXException | ParseException e) {
             throw new RuntimeException(e);
         }
+//        try (Connection connection = DriverManager.getConnection(url, user, password)){
+//            System.out.println("Database connected!");
+//
+//            Statement statement = connection.createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT * from d_cat_catalog");
+//
+//            while (resultSet.next()){
+//                System.out.println(resultSet.getDate(1));
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }
