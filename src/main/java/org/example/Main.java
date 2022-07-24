@@ -14,12 +14,11 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
     //TODO: Сделать считывание не одного, а нескольких файлов (узнать про маски)
-    final static private String file = "data/plants__001.xml";
+    final static private String file = "data/plants__000.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
     private static final ArrayList<Catalog> catalogs = new ArrayList<>();
 
@@ -70,19 +69,44 @@ public class Main {
                     catalogs.add(catalog);
                 }
                 }
-            for (Catalog catalog1 : catalogs) {
-                System.out.println(catalog1.getUuid() + " " + catalog1.getDate() + " "
-                + catalog1.getCompany());
-                for (Plant value : plants) {
-                    System.out.println(value.getCommon() + " " + value.getBotanical() + " "
-                            + value.getPrice());
-                }
-            }
+//            for (Catalog catalog1 : catalogs) {
+//                System.out.println(catalog1.getUuid() + " " + catalog1.getDate() + " "
+//                + catalog1.getCompany());
+//                for (Plant value : plants) {
+//                    System.out.println(value.getCommon() + " " + value.getBotanical() + " "
+//                            + value.getPrice());
+//                }
+//            }
 
         } catch (ParserConfigurationException | IOException | SAXException | ParseException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("Происходит запись каталогов...");
         main.insertCatalogs(catalogs);
+        System.out.println("Происходит запись растений...");
+        main.insertPlants(plants);
+        System.out.println("Запись завершена.");
+    }
+
+    public void insertPlants(ArrayList<Plant> plants){
+        String SQL = "INSERT INTO f_cat_plants(common, botanical, zone, light, price, availability, catalog_id)" +
+                " VALUES(?,?,?,?,?,?, (select id from d_cat_catalog where id = 1))";
+
+        try (Connection connection = connect();
+             PreparedStatement statement = connection.prepareStatement(SQL)){
+            for (Plant plant: plants){
+                statement.setString(1, plant.getCommon());
+                statement.setString(2, plant.getBotanical());
+                statement.setInt(3, plant.getZone());
+                statement.setString(4, plant.getLight());
+                statement.setDouble(5, plant.getPrice());
+                statement.setInt(6, plant.getAvailability());
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void insertCatalogs(ArrayList<Catalog> catalogs){
