@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 /**
  * Класс растений
  */
@@ -10,6 +12,7 @@ public class Plant {
     private String light; //Обитание в свете
     private double price; //Цена
     private int availability; //Доступность
+    private int catalog_id;
 
     public Plant(){
 
@@ -70,5 +73,11 @@ public class Plant {
 
     public void setAvailability(int availability) {
         this.availability = availability;
+    }
+
+    public int getCatalog_id(Catalog catalog, String uuid) {
+        if (Objects.equals(catalog.getUuid(), uuid))
+            catalog_id = catalog.getId();
+        return catalog_id;
     }
 }

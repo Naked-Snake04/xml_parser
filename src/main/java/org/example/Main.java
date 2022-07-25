@@ -17,18 +17,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Main {
-    final static private String file = "data/plants__000.xml";
+    final static private String file = "data/plants__001.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
 
     private static final String url = "jdbc:postgresql://localhost/plant";
     private final static String user = "postgres";
     private final static String password = "Naked_Snake04";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Main main = new Main();
-        Plant plant = null;
+        Plant plant;
         Catalog catalog = null;
-        //String uuid ="";
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -62,7 +61,6 @@ public class Main {
 
                     catalog = new Catalog();
                     catalog.setUuid(eElement.getAttribute("uuid"));
-                    //uuid = eElement.getAttribute("uuid");
                     catalog.setDate(formatter.parse(eElement.getAttribute("date")));
                     catalog.setCompany(eElement.getAttribute("company"));
                 }
@@ -72,18 +70,19 @@ public class Main {
             throw new RuntimeException(e);
         }
         System.out.println("Происходит запись каталогов...");
+        assert catalog != null;
         main.insertCatalog(catalog);
         System.out.println("Происходит запись растений...");
-        main.insertPlants(plants);
+        main.insertPlants(plants, catalog);
         System.out.println("Запись завершена.");
     }
 
-    public void insertPlants(ArrayList<Plant> plants){
-        String SQL = "INSERT INTO f_cat_plants(common, botanical, zone, light, price, availability)" +
-                " VALUES(?,?,?,?,?,?)";
-
-        try (Connection connection = connect();
-             PreparedStatement statement = connection.prepareStatement(SQL)){
+    public void insertPlants(ArrayList<Plant> plants, Catalog catalog) throws SQLException {
+        String SQL = "INSERT INTO f_cat_plants(common, botanical, zone, light, price, availability, catalog_id)" +
+                " VALUES(?,?,?,?,?,?,(SELECT id from d_cat_catalog where id = ?))";
+        Connection connection = connect();
+        try{
+            PreparedStatement statement = connection.prepareStatement(SQL);
                 for (Plant plant : plants) {
                     statement.setString(1, plant.getCommon());
                     statement.setString(2, plant.getBotanical());
@@ -91,6 +90,7 @@ public class Main {
                     statement.setString(4, plant.getLight());
                     statement.setDouble(5, plant.getPrice());
                     statement.setInt(6, plant.getAvailability());
+                    statement.setInt(7, plant.getCatalog_id(catalog, catalog.getUuid()));
                     statement.executeUpdate();
                 }
         } catch (SQLException e) {
@@ -114,14 +114,6 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-
-//    public int getCatalogId(String uuid, Catalog catalog){
-//        int id = 0;
-//        if (catalog.checkUUID(uuid)){
-//
-//        }
-//        return id;
-//    }
 
     public Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);

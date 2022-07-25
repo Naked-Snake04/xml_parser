@@ -10,6 +10,7 @@ public class Catalog {
     private String uuid; //id каталога
     private Date date; //Дата
     private String company; //Компания
+    private int id;
     public Catalog(){
 
     }
@@ -45,7 +46,11 @@ public class Catalog {
         this.company = company;
     }
 
-    public boolean checkUUID(String uuid){
-        return Objects.equals(uuid, getUuid());
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }
