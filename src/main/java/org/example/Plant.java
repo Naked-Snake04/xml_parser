@@ -13,9 +13,22 @@ public class Plant {
     private double price; //Цена
     private int availability; //Доступность
 
+    /**
+     * Пустой конструктор
+     */
     public Plant(){
 
     }
+
+    /**
+     * Конструктор
+     * @param common Общее название
+     * @param botanical Ботаническое название
+     * @param zone Зона
+     * @param light Обитание в свете
+     * @param price Цена
+     * @param availability Доступность
+     */
     public Plant(String common, String botanical, int zone,
                  String light, double price, int availability){
         this.common = common;

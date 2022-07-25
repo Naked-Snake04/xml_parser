@@ -16,6 +16,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * Главный класс
+ */
 public class Main {
     final static private String file = "data/plants__000.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
@@ -28,9 +31,9 @@ public class Main {
         Main main = new Main();
         Plant plant;
         Catalog catalog = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy"); //Форматируем дату
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); //Используем DOM
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new File(file));
             NodeList nodeList = document.getElementsByTagName("PLANT");
@@ -67,8 +70,15 @@ public class Main {
                 }
                 }
 
-        } catch (ParserConfigurationException | IOException | SAXException | ParseException e) {
-            throw new RuntimeException(e);
+        } catch (ParserConfigurationException e) {
+            System.out.println("Произошла ошибка конфигурации парсера. Проверьте содержимое файла и повторите ещё раз");
+        } catch (IOException e) {
+            System.out.println("Произошла ошибка чтения файла. Проверьте правильность пути и повторите ещё раз");
+        } catch (ParseException e) {
+            System.out.println("Произошла ошибка при парсинге. Проверьте содержимое файла и повторите ещё раз");
+        } catch (SAXException e) {
+            System.out.println("Произошла ошибка SAX. Проверьте содержимое файла и повторите ещё раз");
+
         }
         System.out.println("Происходит запись каталогов...");
         assert catalog != null;
@@ -78,6 +88,12 @@ public class Main {
         System.out.println("Запись завершена.");
     }
 
+    /**
+     * Вставляем растения
+     * @param plants растения
+     * @param catalog каталог
+     * @throws SQLException Исключение с SQL
+     */
     public void insertPlants(ArrayList<Plant> plants, Catalog catalog) throws SQLException {
         String SQL = "INSERT INTO f_cat_plants(common, botanical, zone, light, price, availability, catalog_id)" +
                 " VALUES(?,?,?,?,?,?,?)";
@@ -95,10 +111,14 @@ public class Main {
                     statement.executeUpdate();
                 }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Произошла ошибка с SQL-запросом. Проверьте SQL-запрос и повторите ещё раз");
         }
     }
 
+    /**
+     * Вставляем каталог
+     * @param catalog каталог
+     */
     public void insertCatalog(Catalog catalog){
         String SQL = "INSERT INTO d_cat_catalog(id,uuid,delivery_date,company) VALUES(?,?,?,?)";
 
@@ -113,10 +133,15 @@ public class Main {
 
                 statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Произошла ошибка с SQL-запросом. Проверьте SQL-запрос и повторите ещё раз");
         }
     }
 
+    /**
+     * Связь с БД
+     * @return Коннект с БД
+     * @throws SQLException Исключения с SQL
+     */
     public Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }

@@ -1,20 +1,29 @@
 package org.example;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Класс каталог
  */
 public class Catalog {
-    private String uuid; //id каталога
+    private String uuid; //uuid каталога
     private Date date; //Дата
     private String company; //Компания
-    private int id;
+    private int id; //id
+
+    /**
+     * Пустой конструктор
+     */
     public Catalog(){
 
     }
 
+    /**
+     * Конструктор
+     * @param uuid uuid каталога
+     * @param date Дата
+     * @param company Компания
+     */
     public Catalog(String uuid, Date date, String company){
         this.uuid = uuid;
         this.date = date;
