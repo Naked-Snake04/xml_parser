@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Main {
-    final static private String file = "data/plants__001.xml";
+    final static private String file = "data/plants__000.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
 
     private static final String url = "jdbc:postgresql://localhost/plant";
@@ -60,6 +60,7 @@ public class Main {
                     Element eElement = (Element) node;
 
                     catalog = new Catalog();
+                    catalog.setId((int) (Math.random() * 100));
                     catalog.setUuid(eElement.getAttribute("uuid"));
                     catalog.setDate(formatter.parse(eElement.getAttribute("date")));
                     catalog.setCompany(eElement.getAttribute("company"));
@@ -79,7 +80,7 @@ public class Main {
 
     public void insertPlants(ArrayList<Plant> plants, Catalog catalog) throws SQLException {
         String SQL = "INSERT INTO f_cat_plants(common, botanical, zone, light, price, availability, catalog_id)" +
-                " VALUES(?,?,?,?,?,?,(SELECT id from d_cat_catalog where id = ?))";
+                " VALUES(?,?,?,?,?,?,?)";
         Connection connection = connect();
         try{
             PreparedStatement statement = connection.prepareStatement(SQL);
@@ -90,7 +91,7 @@ public class Main {
                     statement.setString(4, plant.getLight());
                     statement.setDouble(5, plant.getPrice());
                     statement.setInt(6, plant.getAvailability());
-                    statement.setInt(7, plant.getCatalog_id(catalog, catalog.getUuid()));
+                    statement.setInt(7, catalog.getId());
                     statement.executeUpdate();
                 }
         } catch (SQLException e) {
@@ -99,15 +100,16 @@ public class Main {
     }
 
     public void insertCatalog(Catalog catalog){
-        String SQL = "INSERT INTO d_cat_catalog(uuid,delivery_date,company) VALUES(?,?,?)";
+        String SQL = "INSERT INTO d_cat_catalog(id,uuid,delivery_date,company) VALUES(?,?,?,?)";
 
         try(
                 Connection connection = connect();
                 PreparedStatement statement = connection.prepareStatement(SQL)) {
 
-                statement.setString(1, catalog.getUuid());
-                statement.setTimestamp(2, new Timestamp(catalog.getDate().getTime()));
-                statement.setString(3, catalog.getCompany());
+                statement.setInt(1,catalog.getId());
+                statement.setString(2, catalog.getUuid());
+                statement.setTimestamp(3, new Timestamp(catalog.getDate().getTime()));
+                statement.setString(4, catalog.getCompany());
 
                 statement.executeUpdate();
         } catch (SQLException e) {
