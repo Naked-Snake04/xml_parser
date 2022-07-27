@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Главный класс
  */
 public class Main {
-    final static private String file = "data/plants__000.xml";
+    final static private String file = "data/plants__002.xml";
     private static final ArrayList<Plant> plants = new ArrayList<>();
 
     private static final String url = "jdbc:postgresql://localhost/plant";
@@ -47,7 +47,8 @@ public class Main {
                     plant = new Plant();
                     plant.setCommon(eElement.getElementsByTagName("COMMON").item(0).getTextContent());
                     plant.setBotanical(eElement.getElementsByTagName("BOTANICAL").item(0).getTextContent());
-                    plant.setZone(Integer.parseInt(eElement.getElementsByTagName("ZONE").item(0).getTextContent()));
+                    plant.setZone(Integer.parseInt(eElement.getElementsByTagName("ZONE").item(0).getTextContent()
+                            .replaceAll("Годичный", "12").replaceAll("3 - 5", "3")));
                     plant.setLight(eElement.getElementsByTagName("LIGHT").item(0).getTextContent());
                     plant.setPrice(Double.parseDouble(eElement.getElementsByTagName("PRICE")
                             .item(0).getTextContent().replaceAll("[$]", "")));
